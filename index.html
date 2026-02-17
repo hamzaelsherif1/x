@@ -3,6 +3,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SONIC SQL Training Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="platform-page">
+  <div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div>
+  <main class="main">
+    <div class="content platform-shell">
+      <header class="platform-hero">
+        <div>
+          <p class="hero-kicker">SONICMansourDataNew · Operational SQL Enablement</p>
+          <h1>Production SQL training built for <em>real SONIC reporting work</em></h1>
+          <p class="hero-lead">A complete operator curriculum with guided lessons, progress tracking, bookmarks, and practical report-building outcomes.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="nav-btn primary" href="lesson-d01.html">Start Program</a>
+          <a class="nav-btn" href="lesson-d15.html">Go to Final Assessment</a>
+        </div>
+      </header>
+
+      <section class="kpi-grid" id="kpiGrid">
+        <article class="kpi-card"><span>Lessons</span><strong id="kpiLessons">15</strong></article>
+        <article class="kpi-card"><span>Completed</span><strong id="kpiDone">0</strong></article>
+        <article class="kpi-card"><span>Bookmarks</span><strong id="kpiBookmarks">0</strong></article>
+        <article class="kpi-card"><span>Program Progress</span><strong id="kpiProgress">0%</strong></article>
+      </section>
+
+      <section class="control-bar">
+        <label class="search-wrap wide">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search by topic, concept, or day (example: joins, territory, debugging)" />
+        </label>
+        <select id="phaseFilter" class="phase-filter">
+          <option value="all">All phases</option>
+          <option value="1">Phase 1 · JOIN Foundations</option>
+          <option value="2">Phase 2 · Schema Mastery</option>
+          <option value="3">Phase 3 · Reporting Execution</option>
+          <option value="4">Phase 4 · Mastery & Assessment</option>
+        </select>
+        <select id="sortFilter" class="phase-filter">
+          <option value="day">Sort by day</option>
+          <option value="duration">Sort by duration</option>
+          <option value="title">Sort by title</option>
+        </select>
+        <button class="cta-btn" id="resetFilters">Reset</button>
+      </section>
+
+      <section class="phase-summary-grid">
+        <article class="phase-summary"><h3>Phase 1</h3><h4>JOIN Foundations</h4><p>Build strong relational thinking and join accuracy.</p></article><article class="phase-summary"><h3>Phase 2</h3><h4>Schema Mastery</h4><p>Understand SONIC entities, paths, and constraints.</p></article><article class="phase-summary"><h3>Phase 3</h3><h4>Reporting Execution</h4><p>Ship production-grade reports and debug issues fast.</p></article><article class="phase-summary"><h3>Phase 4</h3><h4>Mastery & Assessment</h4><p>Aggregate, parameterize, and validate independently.</p></article>
+      </section>
+
+      <section>
+        <div class="sec-label">Lesson Library</div>
+        <div class="lesson-library" id="lessonLibrary"></div>
+      </section>
+
+      <footer class="site-footer">SONIC SQL Training Platform · Built for operational analytics teams</footer>
+    </div>
+  </main>
+  <script src="data.js"></script>
+  <script src="scripts.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SONIC SQL — Mastery Path</title>
