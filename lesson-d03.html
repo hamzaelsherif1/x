@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D03 · Composite Keys — When One Column Isn't Enough</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="lesson-page" data-lesson="d03">
+  <div class="reading-progress" id="readingProgress"></div>
+  <div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div>
+  <main class="main">
+    <div class="content lesson-shell">
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d02.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d04.html">Next lesson →</a>
+      </div>
+
+      <header class="lesson-head">
+        <div class="sec-label">Phase 1 · JOIN Foundations</div>
+        <h1>D03 · Composite Keys — When One Column Isn't Enough</h1>
+        <p>Estimated time: ~1.5 hrs</p>
+      </header>
+
+      <section class="lesson-ops">
+        <button class="nav-btn" id="markComplete">Mark complete</button>
+        <button class="nav-btn" id="bookmarkLesson">Bookmark</button>
+        <span class="ops-hint" id="lessonStatus">Track your progress and keep notes below.</span>
+      </section>
+
+      <article class="day-body" id="lessonBody">
+<div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Understand composite keys — the #1 source of duplicate rows in SONIC. Fix this and duplicates disappear forever.</span></div>
+
+        <div class="analogy">
+          <span class="analogy-ico">🏢</span>
+          <div>
+            <div class="analogy-lbl">The Apartment Analogy</div>
+            <p>To find someone's flat you need: <strong>Building + Floor + Unit</strong>. Just "Unit 5" isn't unique — every floor has one. In SONIC, <strong>CustomerID alone doesn't identify an outlet</strong>. You need <strong>CustomerID + OutletID</strong> together. Miss either one and you get unwanted duplicate rows.</p>
+          </div>
+        </div>
+
+        <div class="c-hd">SONIC's composite keys</div>
+        <ul class="c-list">
+          <li><em>CustomerOutlet</em> — requires <strong>CustomerID + OutletID</strong></li>
+          <li><em>CustomerOutletLanguage</em> — requires <strong>CustomerID + OutletID + LanguageID</strong></li>
+          <li><em>RouteCustomer</em> — requires <strong>RouteID + CustomerID + OutletID</strong></li>
+          <li><em>CityLanguage</em> — requires <strong>CityID + LanguageID</strong></li>
+        </ul>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">❌ Wrong — missing OutletID causes potential duplicate rows</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span> co.CustomerCode, col.Description
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">LEFT JOIN</span> <span class="tb">CustomerOutletLanguage</span> col
+    <span class="kw">ON</span> col.CustomerID = co.CustomerID    <span class="cm">-- Missing OutletID!</span>
+    <span class="kw">AND</span> col.LanguageID = <span class="num">1</span>;</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">✅ Correct — all composite key columns present</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span> co.CustomerCode, col.Description
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">LEFT JOIN</span> <span class="tb">CustomerOutletLanguage</span> col
+    <span class="kw">ON</span> col.CustomerID = co.CustomerID
+    <span class="kw">AND</span> col.OutletID  = co.OutletID    <span class="cm">-- Added!</span>
+    <span class="kw">AND</span> col.LanguageID = <span class="num">1</span>;</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Practice</div>
+          <p>Remove the LanguageID filter from the correct version. Run it. Count the rows. Add it back. Run again. Explain why the count changed — what does each row represent without the filter?</p>
+        </div>
+
+        <div class="milestone">
+          <span class="milestone-ico">🏁</span>
+          <div>
+            <strong>Phase 1 Checkpoint — test yourself after Day 4</strong>
+            <p>Explain out loud, without looking: what a JOIN does, when INNER vs LEFT, what a composite key is, why LanguageID must always be filtered. If you can say it clearly, you're ready for Phase 2.</p>
+          </div>
+        </div>
+      </article>
+
+      <section class="notes-panel">
+        <div class="c-hd">Personal Notes</div>
+        <textarea id="lessonNotes" placeholder="Capture your query strategy, key joins, and gotchas for this lesson..."></textarea>
+      </section>
+
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d02.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d04.html">Next lesson →</a>
+      </div>
+
+      <footer class="site-footer">SONIC SQL Training Platform · D03</footer>
+    </div>
+  </main>
+  <script src="data.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>

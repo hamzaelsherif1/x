@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D09 · The 4-Step Method — Your Query-Writing System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="lesson-page" data-lesson="d09">
+  <div class="reading-progress" id="readingProgress"></div>
+  <div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div>
+  <main class="main">
+    <div class="content lesson-shell">
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d08.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d10.html">Next lesson →</a>
+      </div>
+
+      <header class="lesson-head">
+        <div class="sec-label">Phase 3 · Reporting Execution</div>
+        <h1>D09 · The 4-Step Method — Your Query-Writing System</h1>
+        <p>Estimated time: ~1.5 hrs</p>
+      </header>
+
+      <section class="lesson-ops">
+        <button class="nav-btn" id="markComplete">Mark complete</button>
+        <button class="nav-btn" id="bookmarkLesson">Bookmark</button>
+        <span class="ops-hint" id="lessonStatus">Track your progress and keep notes below.</span>
+      </section>
+
+      <article class="day-body" id="lessonBody">
+<div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Learn the system for building any query from scratch. Apply it every time — it prevents every mistake.</span></div>
+
+        <ul class="c-list" style="margin-bottom:28px">
+          <li><strong>Step 1 — What is ONE row?</strong> The answer becomes your FROM table. One outlet → CustomerOutlet. One salesman day → RouteHistory. One invoice → Transaction.</li>
+          <li><strong>Step 2 — What columns do I need?</strong> List them all. Mark which table each lives in. Split into "on anchor table" vs "needs a JOIN".</li>
+          <li><strong>Step 3 — Trace the path.</strong> For each JOIN, draw the chain from anchor to target. More than 4 hops? Check for a shortcut.</li>
+          <li><strong>Step 4 — INNER or LEFT?</strong> For each JOIN: can the left-side row exist without a right-side match? YES → LEFT JOIN.</li>
+        </ul>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Apply the 4 Steps on Paper</div>
+          <p>Before writing any code, apply all 4 steps to this requirement:<br><em style="color:var(--t1);font-style:normal;font-weight:500">"Show each salesman's name, their territory, and how many outlets are on their route."</em></p>
+          <div class="hint">Step 1 hint — what is ONE row here? A salesman? A route day? Think before coding.</div>
+        </div>
+      </article>
+
+      <section class="notes-panel">
+        <div class="c-hd">Personal Notes</div>
+        <textarea id="lessonNotes" placeholder="Capture your query strategy, key joins, and gotchas for this lesson..."></textarea>
+      </section>
+
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d08.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d10.html">Next lesson →</a>
+      </div>
+
+      <footer class="site-footer">SONIC SQL Training Platform · D09</footer>
+    </div>
+  </main>
+  <script src="data.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
