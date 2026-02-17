@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D13 · Debugging — What to Do When Things Go Wrong</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d12.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d14.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 3 · Real Reporting</div><h1>D13 · Debugging — What to Do When Things Go Wrong</h1><p>Estimated time: ~2 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">A systematic debugging protocol solves 100% of problems in under 5 minutes. This is a learnable skill, not instinct.</span></div>
+
+        <ul class="c-list" style="margin-bottom:28px">
+          <li><strong>Step 1:</strong> <em>SELECT COUNT(*) FROM [YourTable]</em>. Zero rows = wrong database or filters too strict.</li>
+          <li><strong>Step 2:</strong> Add JOINs one at a time. The step where count drops unexpectedly is the bug.</li>
+          <li><strong>Step 3:</strong> Count before and after a JOIN. Doubled? Missing LanguageID or composite key.</li>
+          <li><strong>Step 4:</strong> Filter to one known customer. Does the output match your expectation?</li>
+        </ul>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Diagnostic toolkit — use when something looks wrong</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="cm">-- 1. Is there data in the table?</span>
+<span class="kw">SELECT TOP</span> <span class="num">5</span> * <span class="kw">FROM</span> <span class="tb">CustomerOutlet</span>;
+
+<span class="cm">-- 2. Which rows are NOT matching my JOIN?</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">LEFT JOIN</span> <span class="tb">RouteCustomer</span> rc
+    <span class="kw">ON</span> rc.CustomerID = co.CustomerID <span class="kw">AND</span> rc.OutletID = co.OutletID
+<span class="kw">WHERE</span> rc.RouteID <span class="kw">IS NULL</span>;   <span class="cm">-- Outlets with no route</span>
+
+<span class="cm">-- 3. Am I getting duplicate rows?</span>
+<span class="kw">SELECT</span> co.CustomerID, co.OutletID, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> Cnt
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">LEFT JOIN</span> <span class="tb">CustomerOutletLanguage</span> col
+    <span class="kw">ON</span> col.CustomerID = co.CustomerID <span class="kw">AND</span> col.OutletID = co.OutletID
+    <span class="cm">-- AND col.LanguageID = 1   &lt;-- comment out to provoke duplicates</span>
+<span class="kw">GROUP BY</span> co.CustomerID, co.OutletID
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) > <span class="num">1</span>;   <span class="cm">-- Only rows that appear more than once</span></pre>
+        </div>
+
+        <div class="milestone">
+          <span class="milestone-ico">🏗️</span>
+          <div>
+            <strong>Phase 3 Complete — You Build Real Reports</strong>
+            <p>Customer Master Report (37 columns) and Daily Visits Report — both built from scratch. You have a debugging protocol. Phase 4 is the final stage: proving full mastery.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     PHASE 4
+════════════════════════════════════ -->
+<section id="phase4" class="phase-block ph4">
+  <div class="phase-bar" onclick="togglePhase(this)">
+    <div class="phase-ico">🏆</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 4 — Full Mastery</div>
+      <div class="phase-sub">Days 14–15 · Advanced patterns and the final test — zero help allowed.</article><div class="page-nav"><a class="nav-btn" href="lesson-d12.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d14.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D13</footer></div></main><script src="scripts.js"></script></body></html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D05 · The 5 Golden Rules — Memorise Once, Use Forever</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d04.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d06.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 2 · Schema Mastery</div><h1>D05 · The 5 Golden Rules — Memorise Once, Use Forever</h1><p>Estimated time: ~1.5 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Burn the 5 rules into memory. Every mistake anyone has ever made in this database traces back to breaking one of them.</span></div>
+
+        <div class="rules-grid">
+          <div class="rule"><div class="rule-n">01</div><div><strong>Always start with USE</strong><p>Add <code>USE [SONICMansourDataNew];</code> at the top of every session. Without it you're querying the wrong database.</p></div></div>
+          <div class="rule"><div class="rule-n">02</div><div><strong>Filter inactive and voided</strong><p><code>Inactive = 0</code>, <code>Voided = 0</code>, <code>IsDeleted = 0</code>. Skip these and every number is wrong.</p></div></div>
+          <div class="rule"><div class="rule-n">03</div><div><strong>LanguageID on every Language JOIN</strong><p>Miss it and rows double. Every Language table JOIN needs <code>AND LanguageID = 1</code>. Every. Single. One.</p></div></div>
+          <div class="rule"><div class="rule-n">04</div><div><strong>TransactionID is text, not a number</strong><p>Always quote it: <code>'12345'</code> not <code>12345</code>. It's nvarchar — causes a hard error if you forget.</p></div></div>
+          <div class="rule full"><div class="rule-n">05</div><div><strong>Territory via Route — NEVER via CustOutTerritory</strong><p>CustOutTerritory is for supervisor oversight only. For sales territory use: <code>CustomerOutlet → RouteCustomer → Route → Territory</code>. This is the most common first-timer mistake in this database.</p></div></div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Standard filter set — paste this into every query</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">WHERE</span>
+    co.Inactive  = <span class="num">0</span>    <span class="cm">-- Active outlets only</span>
+    <span class="kw">AND</span>  c.Inactive  = <span class="num">0</span>    <span class="cm">-- Active customers only</span>
+    <span class="kw">AND</span> tr.Voided    = <span class="num">0</span>    <span class="cm">-- Real invoices only</span>
+    <span class="kw">AND</span>  e.Inactive  = <span class="num">0</span>    <span class="cm">-- Active employees only</span>
+    <span class="kw">AND</span> pl.IsDeleted = <span class="num">0</span>    <span class="cm">-- Active price lists only</span></pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Memory Test</div>
+          <p>Close this guide. Write all 5 rules from memory on paper. Open and check. Repeat until you get all 5 without looking. Takes 15 minutes and saves hours of debugging.</p>
+        </div></article><div class="page-nav"><a class="nav-btn" href="lesson-d04.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d06.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D05</footer></div></main><script src="scripts.js"></script></body></html>
