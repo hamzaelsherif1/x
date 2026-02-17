@@ -707,3 +707,49 @@ body{background:var(--bg);}
   .kpi-grid,.phase-summary-grid{grid-template-columns:1fr}
   .control-bar{grid-template-columns:1fr}
 }
+
+/* ===== Sequence-card lesson mode ===== */
+.lesson-page .lesson-shell{max-width:1320px}
+.lesson-page .content{padding-top:28px}
+.lesson-page .day-body{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  scroll-snap-type:y mandatory;
+}
+.lesson-page .seq-card{
+  min-height:72vh;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:22px;
+  background:linear-gradient(160deg,rgba(10,17,30,.86),rgba(9,13,24,.78));
+  backdrop-filter:blur(10px);
+  box-shadow:0 24px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04);
+  padding:28px 30px;
+  scroll-snap-align:start;
+  position:relative;
+  overflow:hidden;
+}
+.lesson-page .seq-card::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at top right,rgba(91,143,255,.12),transparent 42%);
+  pointer-events:none;
+}
+.lesson-page .seq-card > *{position:relative;z-index:1}
+.lesson-page .seq-badge{
+  display:inline-flex;
+  margin-bottom:16px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(91,143,255,.38);
+  background:rgba(91,143,255,.14);
+  color:#9abaff;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+@media(max-width:800px){
+  .lesson-page .seq-card{min-height:60vh;padding:22px 18px}
+}

@@ -48,6 +48,8 @@ function renderIndexPage() {
   const sortFilter = document.getElementById('sortFilter');
   const resetFilters = document.getElementById('resetFilters');
 
+  buildSequenceCards();
+
   const doneSet = loadSet(STORAGE_KEYS.done);
   const bookmarkSet = loadSet(STORAGE_KEYS.bookmarks);
 
@@ -123,11 +125,40 @@ function renderIndexPage() {
   render();
 }
 
+
+function buildSequenceCards() {
+  const lessonBody = document.getElementById('lessonBody');
+  if (!lessonBody || lessonBody.dataset.sequenced === '1') return;
+
+  const blocks = [...lessonBody.children].filter((el) => el.nodeType === 1);
+  if (!blocks.length) return;
+
+  const frag = document.createDocumentFragment();
+  blocks.forEach((block, i) => {
+    const card = document.createElement('article');
+    card.className = 'seq-card';
+
+    const badge = document.createElement('div');
+    badge.className = 'seq-badge';
+    badge.textContent = `Step ${String(i + 1).padStart(2, '0')}`;
+
+    card.appendChild(badge);
+    card.appendChild(block);
+    frag.appendChild(card);
+  });
+
+  lessonBody.innerHTML = '';
+  lessonBody.appendChild(frag);
+  lessonBody.dataset.sequenced = '1';
+}
+
 function setupLessonPage() {
   const body = document.body;
   if (!body.classList.contains('lesson-page')) return;
   const lessonId = body.dataset.lesson;
   if (!lessonId) return;
+
+  buildSequenceCards();
 
   const doneSet = loadSet(STORAGE_KEYS.done);
   const bookmarkSet = loadSet(STORAGE_KEYS.bookmarks);
