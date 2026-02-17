@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D06 · Customer &amp; Outlet — The Heart of the Database</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d05.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d07.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 2 · Schema Mastery</div><h1>D06 · Customer &amp; Outlet — The Heart of the Database</h1><p>Estimated time: ~2.5 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Fully understand Customer vs CustomerOutlet. These two tables appear in almost every query you'll ever write.</span></div>
+
+        <div class="analogy">
+          <span class="analogy-ico">🏢</span>
+          <div>
+            <div class="analogy-lbl">Company vs Branch</div>
+            <p><strong>Customer</strong> = the company ("ABC Supermarkets") — holds currency, payment terms, account<br>
+            <strong>CustomerOutlet</strong> = each physical branch ("ABC Mall", "ABC Downtown") — holds GPS, address, barcode, contacts<br>
+            Sales happen at the <strong>outlet</strong> level. Currency and payment terms live at the <strong>customer</strong> level.</p>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">✅ Correct — payment term and currency from Customer (c), not Outlet (co)</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    co.CustomerCode  <span class="kw">AS</span> OutletCode,
+    c.CustomerCode   <span class="kw">AS</span> CustomerCode,
+    ptl.Description  <span class="kw">AS</span> PaymentTerms,
+    cul.Description  <span class="kw">AS</span> Currency
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">INNER JOIN</span> <span class="tb">Customer</span> c
+    <span class="kw">ON</span> c.CustomerID = co.CustomerID
+<span class="kw">LEFT JOIN</span> <span class="tb">PaymentTerm</span> pt
+    <span class="kw">ON</span> pt.PaymentTermID = c.PaymentTermID     <span class="cm">-- from c, not co</span>
+<span class="kw">LEFT JOIN</span> <span class="tb">PaymentTermLanguage</span> ptl
+    <span class="kw">ON</span> ptl.PaymentTermID = pt.PaymentTermID
+    <span class="kw">AND</span> ptl.LanguageID   = <span class="num">1</span>
+<span class="kw">LEFT JOIN</span> <span class="tb">Currency</span> cur
+    <span class="kw">ON</span> cur.CurrencyID = c.CurrencyID           <span class="cm">-- from c, not co</span>
+<span class="kw">LEFT JOIN</span> <span class="tb">CurrencyLanguage</span> cul
+    <span class="kw">ON</span> cul.CurrencyID  = cur.CurrencyID
+    <span class="kw">AND</span> cul.LanguageID = <span class="num">1</span>
+<span class="kw">WHERE</span> co.Inactive = <span class="num">0</span>;</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Practice</div>
+          <p>Extend the query to also show the CustomerType name. <em>CustomerOutlet</em> has a <em>CustomerTypeID</em>. Join to <em>CustomerType</em>, then <em>CustomerTypeLanguage</em> for the English name.</p>
+        </div></article><div class="page-nav"><a class="nav-btn" href="lesson-d05.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d07.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D06</footer></div></main><script src="scripts.js"></script></body></html>

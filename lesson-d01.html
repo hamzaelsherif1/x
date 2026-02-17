@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D01 · Why Tables Are Split Apart — The Mental Model</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="index.html">← Back to roadmap</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d02.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 1 · JOIN Foundations</div><h1>D01 · Why Tables Are Split Apart — The Mental Model</h1><p>Estimated time: ~1.5 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Understand WHY joins exist before writing a single line of code. Get the "why" and the "how" becomes obvious.</span></div>
+
+        <div class="analogy">
+          <span class="analogy-ico">📱</span>
+          <div>
+            <div class="analogy-lbl">The Contacts App Analogy</div>
+            <p>Your phone contacts don't store the company address inside every employee record — they store a <strong>company ID</strong>, and the company details live separately. Databases do exactly the same. This is called <strong>normalisation</strong>. JOIN is how you reunite the pieces. It's exactly like VLOOKUP in Excel — same idea, far more powerful.</p>
+          </div>
+        </div>
+
+        <div class="c-hd">Concepts to understand</div>
+        <ul class="c-list">
+          <li>A database stores "Cairo" <strong>once</strong> in a City table — not repeated in every customer row</li>
+          <li>Instead, the customer row stores <em>CityID = 5</em></li>
+          <li>JOIN finds the row where CityID = 5 and pulls in the city name alongside your data</li>
+          <li>The <em>ON</em> clause is the match condition — like VLOOKUP's lookup column</li>
+        </ul>
+
+        <div class="c-hd">Run these queries in order — see the transformation</div>
+
+        <div class="code-wrap">
+          <div class="code-bar">
+            <span class="code-lbl">Step 1 — Raw IDs only. CityID is meaningless without a JOIN.</span>
+            <button class="copy-btn" onclick="doCopy(this)">Copy</button>
+          </div>
+          <pre><span class="kw">USE</span> [SONICMansourDataNew];
+<span class="kw">SELECT TOP</span> <span class="num">10</span>
+    co.CustomerCode,
+    co.CityID,       <span class="cm">-- Just a number — what city IS this?</span>
+    co.AreaID        <span class="cm">-- Another number — completely meaningless alone</span>
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">WHERE</span> co.Inactive = <span class="num">0</span>;</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar">
+            <span class="code-lbl">Step 2 — Add a JOIN. Same data, now human-readable.</span>
+            <button class="copy-btn" onclick="doCopy(this)">Copy</button>
+          </div>
+          <pre><span class="kw">USE</span> [SONICMansourDataNew];
+<span class="kw">SELECT TOP</span> <span class="num">10</span>
+    co.CustomerCode,
+    co.CityID,
+    ci.CityCode,
+    cil.Description   <span class="kw">AS</span> CityName      <span class="cm">-- Now we see "Cairo"!</span>
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">LEFT JOIN</span> <span class="tb">City</span> ci
+    <span class="kw">ON</span> ci.CityID = co.CityID
+<span class="kw">LEFT JOIN</span> <span class="tb">CityLanguage</span> cil
+    <span class="kw">ON</span> cil.CityID     = ci.CityID
+    <span class="kw">AND</span> cil.LanguageID = <span class="num">1</span>              <span class="cm">-- English only — NEVER skip this</span>
+<span class="kw">WHERE</span> co.Inactive = <span class="num">0</span>;</pre>
+        </div>
+
+        <div class="c-hd">What to notice</div>
+        <ul class="c-list">
+          <li>Step 1 shows a raw number — meaningless on its own</li>
+          <li>Step 2 shows the city name — only change is one JOIN added</li>
+          <li>Two JOINs are needed: one for the code table, one for the translated name</li>
+          <li>This exact pattern repeats for every named entity in the database</li>
+        </ul>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Practice</div>
+          <p>Extend Step 2 to also show the <strong>Country name</strong>. Add two LEFT JOINs — one to <em>Country</em>, one to <em>CountryLanguage</em>. Follow the identical pattern used for City.</p>
+          <div class="hint">Hint: CustomerOutlet.CountryID → Country.CountryID → CountryLanguage (CountryID + LanguageID = 1)</div>
+        </div></article><div class="page-nav"><a class="nav-btn" href="index.html">← Back to roadmap</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d02.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D01</footer></div></main><script src="scripts.js"></script></body></html>

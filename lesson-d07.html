@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D07 · Routes, Territory &amp; the Daily Record</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d06.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d08.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 2 · Schema Mastery</div><h1>D07 · Routes, Territory &amp; the Daily Record</h1><p>Estimated time: ~2 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Understand how the business operates day to day and how it maps to tables. RouteHistory is the most-linked table in the database — 167 other tables connect to it.</span></div>
+
+        <div class="analogy">
+          <span class="analogy-ico">🚗</span>
+          <div>
+            <div class="analogy-lbl">The Delivery Driver Analogy</div>
+            <p><strong>Route</strong> = planned stops for today (Route 5 visits shops A, B, C, D)<br>
+            <strong>RouteHistory</strong> = what actually happened (Ahmed started 8am, ended 5pm)<br>
+            <strong>RouteHistoryDetail</strong> = each stop (arrived Shop A at 9am, sold 50 units)<br>
+            <strong>Transaction</strong> = the invoice created at each shop</p>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Explore RouteHistory — hub of all daily data</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT TOP</span> <span class="num">20</span>
+    rh.RouteHistoryID,
+    <span class="fn">CAST</span>(rh.RouteDate <span class="kw">AS DATE</span>)  <span class="kw">AS</span> RouteDate,
+    rh.EmployeeID,
+    rh.TerritoryID,         <span class="cm">-- Stored directly — no chain needed here</span>
+    rh.IsRouteEnded,        <span class="cm">-- 1 = day complete, data is final</span>
+    rh.Uploaded             <span class="cm">-- 1 = device has synced to server</span>
+<span class="kw">FROM</span> <span class="tb">RouteHistory</span> rh
+<span class="kw">ORDER BY</span> rh.RouteDate <span class="kw">DESC</span>;</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Visit outcomes — what happened at each shop stop</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    rhd.CustomerID,
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> vs.IsProductive = <span class="num">1</span>                      <span class="kw">THEN</span> <span class="str">'Visited + Sale'</span>
+        <span class="kw">WHEN</span> vs.IsVisited = <span class="num">1</span> <span class="kw">AND</span> vs.IsProductive = <span class="num">0</span> <span class="kw">THEN</span> <span class="str">'Visited, No Sale'</span>
+        <span class="kw">ELSE</span>                                              <span class="str">'Skipped'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> Outcome
+<span class="kw">FROM</span> <span class="tb">RouteHistoryDetail</span> rhd
+<span class="kw">LEFT JOIN</span> <span class="tb">VisitStatus</span> vs
+    <span class="kw">ON</span> vs.VisitStatusID = rhd.VisitStatusID
+<span class="kw">WHERE</span> rhd.RouteHistoryID = (
+    <span class="kw">SELECT TOP</span> <span class="num">1</span> RouteHistoryID <span class="kw">FROM</span> <span class="tb">RouteHistory</span> <span class="kw">ORDER BY</span> RouteDate <span class="kw">DESC</span>
+);</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Practice</div>
+          <p>Run both queries. For the second: count "Visited + Sale", "Visited, No Sale", and "Skipped". Calculate the visit rate (visited ÷ total) and sales rate (sold ÷ visited) as percentages.</p>
+        </div></article><div class="page-nav"><a class="nav-btn" href="lesson-d06.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d08.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D07</footer></div></main><script src="scripts.js"></script></body></html>

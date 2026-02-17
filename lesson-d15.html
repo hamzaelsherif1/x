@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D15 · The Final Test — Three Reports With Zero Help</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d14.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="index.html">Back to roadmap →</a></div><header class="lesson-head"><div class="sec-label">Phase 4 · Full Mastery</div><h1>D15 · The Final Test — Three Reports With Zero Help</h1><p>Estimated time: ~3 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Close every guide. Write all 3 reports from memory using the 4-step method. All 3 must run and return sensible data. No partial credit.</span></div>
+
+        <div class="exercise">
+          <div class="ex-hd">🏆 Test 1 — Top 10 Customers by Revenue This Month</div>
+          <p>Show: CustomerCode, CustomerName (EN), TerritoryCode, TotalRevenue, TotalInvoices — ordered by revenue descending — for the current calendar month only.</p>
+          <div class="hint">Tables: Transaction, CustomerOutlet, Customer, CustomerLanguage, RouteCustomer, Route, Territory, TerritoryLanguage</div>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">🏆 Test 2 — Outlets With No Route Assignment</div>
+          <p>Find all active outlets NOT assigned to any route. Show: CustomerCode, OutletCode, CustomerName (EN). This is a data quality audit query.</p>
+          <div class="hint">Which JOIN type leaves NULLs for unmatched rows? Filter the WHERE clause to show only those NULLs.</div>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">🏆 Test 3 — Salesman Scorecard (Last 30 Days)</div>
+          <p>Show per salesman: Name, Territory, TotalPlanned, TotalVisited, TotalSales, VisitRate (%), SalesRate (%), TotalRevenue. Order by revenue descending.</p>
+          <div class="hint">Start from RouteHistory. Pre-aggregate visits and revenue in separate subqueries. CAST rates as DECIMAL(5,1).</div>
+        </div>
+
+        <div class="milestone">
+          <span class="milestone-ico">🏆</span>
+          <div>
+            <strong>Mastery Achieved</strong>
+            <p>If you passed all 3 tests without help, you have full comprehension of the SONIC database. You can write any report, debug any query, and understand every line of the playbook. That was the goal.</p>
+          </div>
+        </div>
+      </div></article><div class="page-nav"><a class="nav-btn" href="lesson-d14.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="index.html">Back to roadmap →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D15</footer></div></main><script src="scripts.js"></script></body></html>
