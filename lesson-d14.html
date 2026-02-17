@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D14 · GROUP BY, Aggregates &amp; Optional Parameters</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d13.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d15.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 4 · Full Mastery</div><h1>D14 · GROUP BY, Aggregates &amp; Optional Parameters</h1><p>Estimated time: ~2.5 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Master GROUP BY, aggregate functions, and the optional parameter pattern. These appear in every management-level report.</span></div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Optional parameter pattern — one query serves all filter combinations</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">DECLARE</span> @DateFrom    <span class="kw">DATE</span> = <span class="str">'2026-01-01'</span>;
+<span class="kw">DECLARE</span> @DateTo      <span class="kw">DATE</span> = <span class="str">'2026-12-31'</span>;
+<span class="kw">DECLARE</span> @TerritoryID <span class="kw">INT</span>  = <span class="kw">NULL</span>;   <span class="cm">-- NULL = all territories</span>
+<span class="kw">DECLARE</span> @EmployeeID  <span class="kw">INT</span>  = <span class="kw">NULL</span>;   <span class="cm">-- NULL = all employees</span>
+
+<span class="kw">WHERE</span>
+    <span class="fn">CAST</span>(rh.RouteDate <span class="kw">AS DATE</span>) <span class="kw">BETWEEN</span> @DateFrom <span class="kw">AND</span> @DateTo
+    <span class="cm">-- When NULL: condition always true = no filter applied</span>
+    <span class="cm">-- When set to 5: only that territory / employee returned</span>
+    <span class="kw">AND</span> (@TerritoryID <span class="kw">IS NULL OR</span> rh.TerritoryID = @TerritoryID)
+    <span class="kw">AND</span> (@EmployeeID  <span class="kw">IS NULL OR</span> rh.EmployeeID  = @EmployeeID)</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Territory Summary — GROUP BY in full production form</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    t.TerritoryCode,
+    tl.Description                           <span class="kw">AS</span> TerritoryName,
+    <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> rh.EmployeeID)            <span class="kw">AS</span> ActiveSalesmen,
+    <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> rh.RouteHistoryID)        <span class="kw">AS</span> TotalRouteDays,
+    <span class="fn">ISNULL</span>(<span class="fn">SUM</span>(tr.NetTotal), <span class="num">0</span>)             <span class="kw">AS</span> TotalRevenue,
+    <span class="fn">ISNULL</span>(<span class="fn">AVG</span>(tr.NetTotal), <span class="num">0</span>)             <span class="kw">AS</span> AvgInvoiceValue
+<span class="kw">FROM</span> <span class="tb">RouteHistory</span> rh
+    <span class="kw">LEFT JOIN</span> <span class="tb">Territory</span> t   <span class="kw">ON</span> t.TerritoryID  = rh.TerritoryID
+    <span class="kw">LEFT JOIN</span> <span class="tb">TerritoryLanguage</span> tl
+        <span class="kw">ON</span> tl.TerritoryID = t.TerritoryID <span class="kw">AND</span> tl.LanguageID = <span class="num">1</span>
+    <span class="kw">LEFT JOIN</span> <span class="tb">Transaction</span> tr
+        <span class="kw">ON</span>  tr.RouteHistoryID    = rh.RouteHistoryID
+        <span class="kw">AND</span> tr.TransactionTypeID = <span class="num">1</span>
+        <span class="kw">AND</span> tr.Voided            = <span class="num">0</span>
+<span class="kw">WHERE</span> <span class="fn">CAST</span>(rh.RouteDate <span class="kw">AS DATE</span>) <span class="kw">BETWEEN</span> <span class="str">'2026-01-01'</span> <span class="kw">AND</span> <span class="str">'2026-12-31'</span>
+<span class="kw">GROUP BY</span>
+    t.TerritoryCode,
+    tl.Description
+<span class="kw">ORDER BY</span> <span class="fn">SUM</span>(tr.NetTotal) <span class="kw">DESC</span>;</pre>
+        </div></article><div class="page-nav"><a class="nav-btn" href="lesson-d13.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d15.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D14</footer></div></main><script src="scripts.js"></script></body></html>

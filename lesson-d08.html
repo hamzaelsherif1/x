@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D08 · Transactions &amp; Products — The Invoice System</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d07.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d09.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 2 · Schema Mastery</div><h1>D08 · Transactions &amp; Products — The Invoice System</h1><p>Estimated time: ~2.5 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Understand how invoices and product lines work, and master pre-aggregation — the fix for row multiplication, the most common advanced mistake.</span></div>
+
+        <ul class="c-list">
+          <li>One <strong>Transaction</strong> = one invoice header (Invoice #1234, Total $500)</li>
+          <li>Many <strong>TransactionDetail</strong> = individual product lines on that invoice</li>
+          <li>Joining both gives <em>one row per product per invoice</em> — this causes aggregation errors</li>
+          <li>Fix: pre-aggregate TransactionDetail in a subquery <em>before</em> joining to anything else</li>
+        </ul>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Pre-aggregation pattern — prevents row multiplication</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    tr.TransactionID,
+    co.CustomerCode,
+    tr.NetTotal,
+    sales.TotalQty         <span class="cm">-- Pre-aggregated — one row per invoice stays one row</span>
+<span class="kw">FROM</span> <span class="tb">Transaction</span> tr
+<span class="kw">INNER JOIN</span> <span class="tb">CustomerOutlet</span> co
+    <span class="kw">ON</span> co.CustomerID = tr.CustomerID
+    <span class="kw">AND</span> co.OutletID  = tr.OutletID
+<span class="kw">LEFT JOIN</span> (
+    <span class="cm">-- Aggregate BEFORE joining — not after</span>
+    <span class="kw">SELECT</span> TransactionID, <span class="fn">SUM</span>(Quantity) <span class="kw">AS</span> TotalQty
+    <span class="kw">FROM</span> <span class="tb">TransactionDetail</span>
+    <span class="kw">GROUP BY</span> TransactionID
+) sales <span class="kw">ON</span> sales.TransactionID = tr.TransactionID
+<span class="kw">WHERE</span>
+    tr.TransactionTypeID = <span class="num">1</span>   <span class="cm">-- Sales invoices only</span>
+    <span class="kw">AND</span> tr.Voided       = <span class="num">0</span>   <span class="cm">-- Never cancelled</span>
+    <span class="kw">AND</span> co.Inactive     = <span class="num">0</span>
+<span class="kw">ORDER BY</span> tr.TransactionDate <span class="kw">DESC</span>;</pre>
+        </div>
+
+        <div class="milestone">
+          <span class="milestone-ico">🗺️</span>
+          <div>
+            <strong>Phase 2 Complete — You Know the Schema</strong>
+            <p>Customer & Outlet, Routes & Territory, daily operations, transactions & products. You can navigate this database without guessing. Phase 3 is where everything comes together into real reports.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     PHASE 3
+════════════════════════════════════ -->
+<section id="phase3" class="phase-block ph3">
+  <div class="phase-bar" onclick="togglePhase(this)">
+    <div class="phase-ico">🏗️</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 3 — Build Real Reports</div>
+      <div class="phase-sub">Days 9–13 · Write actual production reports from scratch using a system.</article><div class="page-nav"><a class="nav-btn" href="lesson-d07.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d09.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D08</footer></div></main><script src="scripts.js"></script></body></html>

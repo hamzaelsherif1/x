@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>D12 · Build the Daily Visits Report</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body><div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div><main class="main"><div class="content lesson-shell"><div class="page-nav"><a class="nav-btn" href="lesson-d11.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d13.html">Next lesson →</a></div><header class="lesson-head"><div class="sec-label">Phase 3 · Real Reporting</div><h1>D12 · Build the Daily Visits Report</h1><p>Estimated time: ~2.5 hrs</p></header><article class="day-body"><div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Build a completely different report — proving the 4-step method works for any requirement.</span></div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Daily Visits Report — one row per salesman per day</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">USE</span> [SONICMansourDataNew];
+<span class="kw">GO</span>
+<span class="kw">DECLARE</span> @DateFrom <span class="kw">DATE</span> = <span class="str">'2026-01-01'</span>;
+<span class="kw">DECLARE</span> @DateTo   <span class="kw">DATE</span> = <span class="str">'2026-12-31'</span>;
+
+<span class="kw">SELECT</span>
+    <span class="fn">CAST</span>(rh.RouteDate <span class="kw">AS DATE</span>)   <span class="kw">AS</span> Date,
+    e.EmployeeCode,
+    el.Description                <span class="kw">AS</span> SalesmanName,
+    t.TerritoryCode,
+    tl.Description                <span class="kw">AS</span> TerritoryName,
+    visits.TotalPlanned,
+    visits.TotalVisited,
+    visits.TotalSales,
+    <span class="fn">ISNULL</span>(sales.TotalRevenue, <span class="num">0</span>)  <span class="kw">AS</span> TotalRevenue
+<span class="kw">FROM</span> <span class="tb">RouteHistory</span> rh
+    <span class="kw">INNER JOIN</span> <span class="tb">Employee</span> e   <span class="kw">ON</span> e.EmployeeID = rh.EmployeeID
+    <span class="kw">LEFT JOIN</span>  <span class="tb">EmployeeLanguage</span> el
+        <span class="kw">ON</span> el.EmployeeID = e.EmployeeID <span class="kw">AND</span> el.LanguageID = <span class="num">1</span>
+    <span class="kw">LEFT JOIN</span>  <span class="tb">Territory</span> t    <span class="kw">ON</span> t.TerritoryID  = rh.TerritoryID
+    <span class="kw">LEFT JOIN</span>  <span class="tb">TerritoryLanguage</span> tl
+        <span class="kw">ON</span> tl.TerritoryID = t.TerritoryID <span class="kw">AND</span> tl.LanguageID = <span class="num">1</span>
+    <span class="kw">LEFT JOIN</span> (
+        <span class="kw">SELECT</span>
+            RouteHistoryID,
+            <span class="fn">COUNT</span>(*)                                                       <span class="kw">AS</span> TotalPlanned,
+            <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> vs.IsVisited    = <span class="num">1</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>)    <span class="kw">AS</span> TotalVisited,
+            <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> vs.IsProductive = <span class="num">1</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>)    <span class="kw">AS</span> TotalSales
+        <span class="kw">FROM</span> <span class="tb">RouteHistoryDetail</span> rhd
+        <span class="kw">LEFT JOIN</span> <span class="tb">VisitStatus</span> vs <span class="kw">ON</span> vs.VisitStatusID = rhd.VisitStatusID
+        <span class="kw">GROUP BY</span> RouteHistoryID
+    ) visits <span class="kw">ON</span> visits.RouteHistoryID = rh.RouteHistoryID
+    <span class="kw">LEFT JOIN</span> (
+        <span class="kw">SELECT</span> RouteHistoryID, <span class="fn">SUM</span>(NetTotal) <span class="kw">AS</span> TotalRevenue
+        <span class="kw">FROM</span> <span class="tb">Transaction</span>
+        <span class="kw">WHERE</span> TransactionTypeID = <span class="num">1</span> <span class="kw">AND</span> Voided = <span class="num">0</span>
+        <span class="kw">GROUP BY</span> RouteHistoryID
+    ) sales <span class="kw">ON</span> sales.RouteHistoryID = rh.RouteHistoryID
+<span class="kw">WHERE</span>
+    <span class="fn">CAST</span>(rh.RouteDate <span class="kw">AS DATE</span>) <span class="kw">BETWEEN</span> @DateFrom <span class="kw">AND</span> @DateTo
+    <span class="kw">AND</span> e.Inactive = <span class="num">0</span>
+<span class="kw">ORDER BY</span> rh.RouteDate <span class="kw">DESC</span>, e.EmployeeCode;</pre>
+        </div></article><div class="page-nav"><a class="nav-btn" href="lesson-d11.html">← Previous lesson</a><a class="nav-btn" href="index.html">Roadmap</a><a class="nav-btn" href="lesson-d13.html">Next lesson →</a></div><footer class="site-footer">SONIC SQL Mastery Path · D12</footer></div></main><script src="scripts.js"></script></body></html>
