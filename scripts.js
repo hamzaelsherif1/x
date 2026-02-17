@@ -184,3 +184,4 @@ function setupLessonPage() {
 
 renderIndexPage();
 setupLessonPage();
+function doCopy(btn){const pre=btn.closest('.code-wrap')?.querySelector('pre');if(!pre)return;navigator.clipboard.writeText(pre.innerText).then(()=>{btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok');},1800);});}
