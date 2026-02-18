@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
-const ROOT = join(import.meta.dirname, '..');
+const ROOT = '/vercel/share/v0-project';
 
 // ─── Fix lesson files (d01–d15) ────────────────────────────────────
 // Pattern: After the first <div class="goal">...</div> there is a duplicate
