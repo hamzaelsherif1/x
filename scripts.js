@@ -48,6 +48,7 @@ function renderIndexPage() {
   const sortFilter = document.getElementById('sortFilter');
   const resetFilters = document.getElementById('resetFilters');
 
+  buildSequenceCards();
 
   const doneSet = loadSet(STORAGE_KEYS.done);
   const bookmarkSet = loadSet(STORAGE_KEYS.bookmarks);
@@ -153,6 +154,8 @@ function buildSequenceCards() {
 
   const frag = document.createDocumentFragment();
   groups.forEach((group, i) => {
+  const frag = document.createDocumentFragment();
+  blocks.forEach((block, i) => {
     const card = document.createElement('article');
     card.className = 'seq-card';
 
@@ -162,6 +165,7 @@ function buildSequenceCards() {
 
     card.appendChild(badge);
     group.forEach((node) => card.appendChild(node));
+    card.appendChild(block);
     frag.appendChild(card);
   });
 
@@ -176,6 +180,7 @@ function setupLessonPage() {
   const lessonId = body.dataset.lesson;
   if (!lessonId) return;
 
+  buildSequenceCards();
 
   const doneSet = loadSet(STORAGE_KEYS.done);
   const bookmarkSet = loadSet(STORAGE_KEYS.bookmarks);
@@ -232,3 +237,4 @@ function setupLessonPage() {
 
 renderIndexPage();
 setupLessonPage();
+function doCopy(btn){const pre=btn.closest('.code-wrap')?.querySelector('pre');if(!pre)return;navigator.clipboard.writeText(pre.innerText).then(()=>{btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok');},1800);});}
