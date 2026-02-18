@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D10 · Build the Customer Master Report — Part 1 (Cols 1–15)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="lesson-page" data-lesson="d10">
+  <div class="reading-progress" id="readingProgress"></div>
+  <div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div>
+  <main class="main">
+    <div class="content lesson-shell">
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d09.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d11.html">Next lesson →</a>
+      </div>
+
+      <header class="lesson-head">
+        <div class="sec-label">Phase 3 · Reporting Execution</div>
+        <h1>D10 · Build the Customer Master Report — Part 1 (Cols 1–15)</h1>
+        <p>Estimated time: ~3 hrs</p>
+      </header>
+
+      <section class="lesson-ops">
+        <button class="nav-btn" id="markComplete">Mark complete</button>
+        <button class="nav-btn" id="bookmarkLesson">Bookmark</button>
+        <span class="ops-hint" id="lessonStatus">Track your progress and keep notes below.</span>
+      </section>
+
+      <article class="day-body" id="lessonBody">
+<div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Build the first 15 columns yourself. No copying the final query — build it section by section.</span></div>
+
+        <ul class="c-list" style="margin-bottom:24px">
+          <li><strong>Cols 1–3:</strong> CustomerCode, OutletCode, Barcode — directly on Customer / CustomerOutlet</li>
+          <li><strong>Col 4:</strong> CustomerType — CustomerTypeID → CustomerType → CustomerTypeLanguage</li>
+          <li><strong>Cols 5–6:</strong> OrganizationCode, OrganizationName — via Route chain → Territory → Organization</li>
+          <li><strong>Col 7:</strong> TerritoryCode — same Route chain</li>
+          <li><strong>Col 8:</strong> PriceListCode — CustomerOutletGroup → GroupPrice → PriceList</li>
+          <li><strong>Cols 9–11:</strong> Phone, Fax, Email — directly on CustomerOutlet</li>
+          <li><strong>Cols 12–13:</strong> CreditLimit, Balance — AccountCustOut → Account</li>
+          <li><strong>Cols 14–15:</strong> PaymentTerms, BillsNo — Customer → PaymentTerm</li>
+        </ul>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Starting skeleton — uncomment one section at a time, add JOINs, run, verify</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">USE</span> [SONICMansourDataNew];
+<span class="kw">GO</span>
+<span class="kw">SELECT</span>
+    <span class="cm">-- Cols 1-3 (direct)</span>
+    c.CustomerCode,
+    co.CustomerCode  <span class="kw">AS</span> OutletCode,
+    co.Barcode,
+
+    <span class="cm">-- Col 4: CustomerType — uncomment + add JOIN</span>
+    <span class="cm">-- ctl_en.Description AS CustomerType,</span>
+
+    <span class="cm">-- Cols 5-6: Organization — uncomment + add Route chain JOIN</span>
+    <span class="cm">-- o.OrganizationCode,</span>
+    <span class="cm">-- ol_en.Description AS OrganizationDescription,</span>
+
+    <span class="cm">-- Col 7: Territory — uncomment + add Territory JOIN</span>
+    <span class="cm">-- t.TerritoryCode,</span>
+
+    <span class="cm">-- Col 8: PriceList — uncomment + add Group chain JOIN</span>
+    <span class="cm">-- pl.PriceListCode,</span>
+
+    <span class="cm">-- Cols 9-11 (direct)</span>
+    co.Phone, co.Fax, co.Email,
+
+    <span class="cm">-- Cols 12-13: Account — uncomment + add Account chain JOIN</span>
+    <span class="cm">-- ISNULL(a.CreditLimit, 0) AS CreditLimit,</span>
+    <span class="cm">-- ISNULL(a.Balance,     0) AS Balance,</span>
+
+    <span class="cm">-- Cols 14-15: PaymentTerm — uncomment + add PaymentTerm JOIN</span>
+    <span class="cm">-- ptl_en.Description      AS PaymentTerms,</span>
+    <span class="cm">-- co.BillsOpenNumber       AS BillsNo</span>
+
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+    <span class="kw">INNER JOIN</span> <span class="tb">Customer</span> c <span class="kw">ON</span> c.CustomerID = co.CustomerID
+    <span class="cm">-- Add your JOINs here — one section at a time</span>
+<span class="kw">WHERE</span>
+    co.Inactive = <span class="num">0</span>
+    <span class="kw">AND</span> c.Inactive  = <span class="num">0</span>
+<span class="kw">ORDER BY</span> c.CustomerCode, co.OutletID;</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Task</div>
+          <p>Uncomment one section. Add the JOIN(s) needed. Run. Verify the column shows real data. Move to the next. Never try to add all 15 at once.</p>
+          <div class="hint">Column shows NULL? Check INNER vs LEFT. Check all composite key columns are in the ON clause.</div>
+        </div>
+      </article>
+
+      <section class="notes-panel">
+        <div class="c-hd">Personal Notes</div>
+        <textarea id="lessonNotes" placeholder="Capture your query strategy, key joins, and gotchas for this lesson..."></textarea>
+      </section>
+
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d09.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d11.html">Next lesson →</a>
+      </div>
+
+      <footer class="site-footer">SONIC SQL Training Platform · D10</footer>
+    </div>
+  </main>
+  <script src="data.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>

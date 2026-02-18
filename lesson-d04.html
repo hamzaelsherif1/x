@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D04 · JOIN Chains — Connecting Three or More Tables</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="lesson-page" data-lesson="d04">
+  <div class="reading-progress" id="readingProgress"></div>
+  <div class="ambient"><div class="ambient-orb orb-1"></div><div class="ambient-orb orb-2"></div><div class="ambient-orb orb-3"></div></div>
+  <main class="main">
+    <div class="content lesson-shell">
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d03.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d05.html">Next lesson →</a>
+      </div>
+
+      <header class="lesson-head">
+        <div class="sec-label">Phase 1 · JOIN Foundations</div>
+        <h1>D04 · JOIN Chains — Connecting Three or More Tables</h1>
+        <p>Estimated time: ~2 hrs</p>
+      </header>
+
+      <section class="lesson-ops">
+        <button class="nav-btn" id="markComplete">Mark complete</button>
+        <button class="nav-btn" id="bookmarkLesson">Bookmark</button>
+        <span class="ops-hint" id="lessonStatus">Track your progress and keep notes below.</span>
+      </section>
+
+      <article class="day-body" id="lessonBody">
+<div class="goal"><span class="goal-tag">Today's Goal</span><span class="goal-txt">Chain multiple JOINs together — navigating from an outlet to its territory in 4 hops, or to its price list in 3 hops.</span></div>
+
+        <div class="c-hd">The three critical chains in SONIC</div>
+
+        <div class="path-chain">
+          <span class="pn">CustomerOutlet</span><span class="pa">→</span>
+          <span class="pn">RouteCustomer</span><span class="pa">→</span>
+          <span class="pn">Route</span><span class="pa">→</span>
+          <span class="pn">Territory</span><span class="pa">→</span>
+          <span class="pn">TerritoryLanguage</span>
+          <span class="pc-label">Chain 1: Territory</span>
+        </div>
+        <div class="path-chain">
+          <span class="pn">CustomerOutlet</span><span class="pa">→</span>
+          <span class="pn">CustomerOutletGroup</span><span class="pa">→</span>
+          <span class="pn">GroupPrice</span><span class="pa">→</span>
+          <span class="pn">PriceList</span>
+          <span class="pc-label">Chain 2: Price List</span>
+        </div>
+        <div class="path-chain" style="margin-bottom:28px">
+          <span class="pn">CustomerOutlet</span><span class="pa">→</span>
+          <span class="pn">AccountCustOut</span><span class="pa">→</span>
+          <span class="pn">Account</span>
+          <span class="pc-label">Chain 3: Credit Limit</span>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lbl">Chain 1 — Territory via Route (the only correct path)</span><button class="copy-btn" onclick="doCopy(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span>
+    co.CustomerCode,
+    t.TerritoryCode,
+    tl.Description  <span class="kw">AS</span> TerritoryName
+<span class="kw">FROM</span> <span class="tb">CustomerOutlet</span> co
+<span class="kw">LEFT JOIN</span> <span class="tb">RouteCustomer</span> rc        <span class="cm">-- Hop 1</span>
+    <span class="kw">ON</span> rc.CustomerID = co.CustomerID
+    <span class="kw">AND</span> rc.OutletID  = co.OutletID
+<span class="kw">LEFT JOIN</span> <span class="tb">Route</span> r                  <span class="cm">-- Hop 2</span>
+    <span class="kw">ON</span> r.RouteID = rc.RouteID
+<span class="kw">LEFT JOIN</span> <span class="tb">Territory</span> t              <span class="cm">-- Hop 3</span>
+    <span class="kw">ON</span> t.TerritoryID = r.TerritoryID
+<span class="kw">LEFT JOIN</span> <span class="tb">TerritoryLanguage</span> tl     <span class="cm">-- Hop 4: name</span>
+    <span class="kw">ON</span> tl.TerritoryID = t.TerritoryID
+    <span class="kw">AND</span> tl.LanguageID = <span class="num">1</span>
+<span class="kw">WHERE</span> co.Inactive = <span class="num">0</span>;</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-hd">✏️ Build Chain 2 Yourself</div>
+          <p>Using Chain 1 as your template, write Chain 2 — the Price List path. Start from CustomerOutlet, go CustomerOutletGroup → GroupPrice → PriceList. Select CustomerCode and PriceListCode.</p>
+          <div class="hint">Hint: CustomerOutletGroup joins on CustomerID + OutletID. GroupPrice joins on GroupID. PriceList joins on PriceListID.</div>
+        </div>
+      </article>
+
+      <section class="notes-panel">
+        <div class="c-hd">Personal Notes</div>
+        <textarea id="lessonNotes" placeholder="Capture your query strategy, key joins, and gotchas for this lesson..."></textarea>
+      </section>
+
+      <div class="page-nav">
+        <a class="nav-btn" href="lesson-d03.html">← Previous lesson</a>
+        <a class="nav-btn" href="index.html">Roadmap</a>
+        <a class="nav-btn" href="lesson-d05.html">Next lesson →</a>
+      </div>
+
+      <footer class="site-footer">SONIC SQL Training Platform · D04</footer>
+    </div>
+  </main>
+  <script src="data.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
