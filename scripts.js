@@ -48,8 +48,6 @@ function renderIndexPage() {
   const sortFilter = document.getElementById('sortFilter');
   const resetFilters = document.getElementById('resetFilters');
 
-  buildSequenceCards();
-
   const doneSet = loadSet(STORAGE_KEYS.done);
   const bookmarkSet = loadSet(STORAGE_KEYS.bookmarks);
 
@@ -65,6 +63,8 @@ function renderIndexPage() {
   function cardTemplate(lesson) {
     const done = doneSet.has(lesson.id);
     const bookmarked = bookmarkSet.has(lesson.id);
+    const phaseColors = { 1: 'blue', 2: 'pink', 3: 'teal', 4: 'amber' };
+    const color = phaseColors[lesson.phase] || 'blue';
     return `
       <article class="lesson-card ${done ? 'done' : ''}">
         <div class="lesson-top">
@@ -72,10 +72,10 @@ function renderIndexPage() {
           <span class="lesson-phase">Phase ${lesson.phase}</span>
         </div>
         <h3>${lesson.title}</h3>
-        <p>${lesson.duration} · ${done ? 'Completed' : 'In progress'}</p>
+        <p>${lesson.duration} &middot; ${done ? 'Completed' : 'In progress'}</p>
         <div class="lesson-actions">
           <a class="nav-btn primary" href="lesson-${lesson.id}.html">Open lesson</a>
-          <button class="nav-btn bookmark-toggle" data-id="${lesson.id}">${bookmarked ? '★ Saved' : '☆ Save'}</button>
+          <button class="nav-btn bookmark-toggle" data-id="${lesson.id}">${bookmarked ? 'Saved' : 'Save'}</button>
         </div>
       </article>
     `;
@@ -125,7 +125,6 @@ function renderIndexPage() {
   render();
 }
 
-
 function buildSequenceCards() {
   const lessonBody = document.getElementById('lessonBody');
   if (!lessonBody || lessonBody.dataset.sequenced === '1') return;
@@ -142,7 +141,6 @@ function buildSequenceCards() {
       carry.push(block);
       return;
     }
-
     groups.push([...carry, block]);
     carry = [];
   });
@@ -154,8 +152,6 @@ function buildSequenceCards() {
 
   const frag = document.createDocumentFragment();
   groups.forEach((group, i) => {
-  const frag = document.createDocumentFragment();
-  blocks.forEach((block, i) => {
     const card = document.createElement('article');
     card.className = 'seq-card';
 
@@ -165,7 +161,6 @@ function buildSequenceCards() {
 
     card.appendChild(badge);
     group.forEach((node) => card.appendChild(node));
-    card.appendChild(block);
     frag.appendChild(card);
   });
 
@@ -194,47 +189,62 @@ function setupLessonPage() {
   function syncUi() {
     const done = doneSet.has(lessonId);
     const bookmarked = bookmarkSet.has(lessonId);
-    markComplete.textContent = done ? 'Completed ✓' : 'Mark complete';
-    markComplete.classList.toggle('primary', done);
-    bookmarkBtn.textContent = bookmarked ? 'Bookmarked ★' : 'Bookmark';
-    status.textContent = done
-      ? 'Completed. Keep refining your notes and query patterns.'
-      : 'Complete the exercises, then mark this lesson done.';
+    if (markComplete) {
+      markComplete.textContent = done ? 'Completed' : 'Mark complete';
+      markComplete.classList.toggle('primary', done);
+    }
+    if (bookmarkBtn) {
+      bookmarkBtn.textContent = bookmarked ? 'Bookmarked' : 'Bookmark';
+    }
+    if (status) {
+      status.textContent = done
+        ? 'Completed. Keep refining your notes and query patterns.'
+        : 'Complete the exercises, then mark this lesson done.';
+    }
   }
 
-  markComplete.addEventListener('click', () => {
-    if (doneSet.has(lessonId)) doneSet.delete(lessonId);
-    else doneSet.add(lessonId);
-    saveSet(STORAGE_KEYS.done, doneSet);
-    syncUi();
-  });
+  if (markComplete) {
+    markComplete.addEventListener('click', () => {
+      if (doneSet.has(lessonId)) doneSet.delete(lessonId);
+      else doneSet.add(lessonId);
+      saveSet(STORAGE_KEYS.done, doneSet);
+      syncUi();
+    });
+  }
 
-  bookmarkBtn.addEventListener('click', () => {
-    if (bookmarkSet.has(lessonId)) bookmarkSet.delete(lessonId);
-    else bookmarkSet.add(lessonId);
-    saveSet(STORAGE_KEYS.bookmarks, bookmarkSet);
-    syncUi();
-  });
+  if (bookmarkBtn) {
+    bookmarkBtn.addEventListener('click', () => {
+      if (bookmarkSet.has(lessonId)) bookmarkSet.delete(lessonId);
+      else bookmarkSet.add(lessonId);
+      saveSet(STORAGE_KEYS.bookmarks, bookmarkSet);
+      syncUi();
+    });
+  }
 
-  notesInput.value = notes[lessonId] || '';
-  notesInput.addEventListener('input', () => {
-    notes[lessonId] = notesInput.value;
-    saveNotes(notes);
-  });
+  if (notesInput) {
+    notesInput.value = notes[lessonId] || '';
+    notesInput.addEventListener('input', () => {
+      notes[lessonId] = notesInput.value;
+      saveNotes(notes);
+    });
+  }
 
   const progressBar = document.getElementById('readingProgress');
-  const updateReading = () => {
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
-    progressBar.style.width = `${pct}%`;
-  };
-  document.addEventListener('scroll', updateReading, { passive: true });
-  updateReading();
+  if (progressBar) {
+    const updateReading = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      progressBar.style.width = `${pct}%`;
+    };
+    document.addEventListener('scroll', updateReading, { passive: true });
+    updateReading();
+  }
 
   syncUi();
 }
 
-renderIndexPage();
-setupLessonPage();
-function doCopy(btn){const pre=btn.closest('.code-wrap')?.querySelector('pre');if(!pre)return;navigator.clipboard.writeText(pre.innerText).then(()=>{btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok');},1800);});}
+document.addEventListener('DOMContentLoaded', () => {
+  renderIndexPage();
+  setupLessonPage();
+});
