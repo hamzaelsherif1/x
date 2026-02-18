@@ -133,6 +133,27 @@ function buildSequenceCards() {
   const blocks = [...lessonBody.children].filter((el) => el.nodeType === 1);
   if (!blocks.length) return;
 
+  const groups = [];
+  let carry = [];
+
+  blocks.forEach((block) => {
+    const isHeading = block.classList?.contains('c-hd');
+    if (isHeading) {
+      carry.push(block);
+      return;
+    }
+
+    groups.push([...carry, block]);
+    carry = [];
+  });
+
+  if (carry.length) {
+    if (groups.length) groups[groups.length - 1].push(...carry);
+    else groups.push(carry);
+  }
+
+  const frag = document.createDocumentFragment();
+  groups.forEach((group, i) => {
   const frag = document.createDocumentFragment();
   blocks.forEach((block, i) => {
     const card = document.createElement('article');
@@ -143,6 +164,7 @@ function buildSequenceCards() {
     badge.textContent = `Step ${String(i + 1).padStart(2, '0')}`;
 
     card.appendChild(badge);
+    group.forEach((node) => card.appendChild(node));
     card.appendChild(block);
     frag.appendChild(card);
   });
